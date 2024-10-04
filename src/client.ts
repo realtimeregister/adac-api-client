@@ -148,13 +148,12 @@ export default class ADAC {
 
     /**
      * Process input from the input element.
-     * @param {Event | null} _event - event, ignored
      * @param {string} value - value from input element
      * @param {number[]} categories
      * @private
      */
     // @ts-ignore
-    processInput (_event: Event | null, value: string, categories: number[] = []) {
+    processInput (value: string, categories: number[] = []) {
         if (value !== '') {
             if (this.debug) console.log('ADAC: input given:', value)
 
