@@ -1,4 +1,4 @@
-import { AdacUserConfig, DomainResult, CategoriesResult, SuggestionResult } from './resources/types'
+import { AdacUserConfig, DomainResult, CategoriesResult, SuggestionResult, AdacErrorResponse } from './resources/types'
 import { onDomReady } from './utils'
 
 import WebsocketsAPI from './api/websockets'
@@ -23,7 +23,12 @@ export default class ADAC {
         this.debug = userConfig.debug || false
         this.ote = userConfig.ote || false
         this.disableSSL = userConfig.disable_ssl || false
-        this.onReady = onReady
+
+        if (typeof onReady === 'function') {
+            this.onReady = onReady
+        } else {
+            this.onReady = () => {}
+        }
 
         if (userConfig.api_host) {
             this.API_HOST = userConfig.api_host
@@ -63,8 +68,12 @@ export default class ADAC {
     // @ts-ignore
     onCategories (result: CategoriesResult[]) {}
 
+    /**
+     * Hook, called when an error has occurred
+     * @param {AdacErrorResponse} error
+     */
     // @ts-ignore
-    onClientError (error: Error) {}
+    onClientError (error: AdacErrorResponse) {}
 
 
     /**
@@ -138,10 +147,10 @@ export default class ADAC {
 
     /**
      * Handler for error messages
-     * @param {Error} error
+     * @param {AdacErrorResponse} error
      */
     // @ts-expect-error Call determined by string value in connection.onmessage
-    private action_error (error: Error) {
+    private action_error (error: AdacErrorResponse) {
         if (this.debug) console.log('ADAC: action_error():', error)
         this.onClientError(error)
     }

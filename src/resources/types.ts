@@ -35,3 +35,8 @@ export interface CommandData {
     input: string;
     categories: number[];
 }
+
+export interface AdacErrorResponse {
+    action: ActionEnum.ERROR,
+    data: string
+}

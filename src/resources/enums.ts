@@ -10,7 +10,6 @@ export enum DomainStatusEnum {
 export enum ActionEnum {
     INPUT = 'input',
     CATEGORIES = 'categories',
-    DOMAIN_STATUS = 'domain_status',
     POLL = 'poll',
     ERROR = 'error',
 }
