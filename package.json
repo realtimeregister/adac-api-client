@@ -6,6 +6,7 @@
   "files": [
     "dist"
   ],
+  "license": "MIT",
   "main": "./dist/adac-api-client.umd.js",
   "module": "./dist/adac-api-client.es.js",
   "scripts": {
