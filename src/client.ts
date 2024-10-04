@@ -56,15 +56,23 @@ export default class ADAC {
     }
 
     /**
-     * Hook when a domain result came back.
+     * Hook, called when a domain result came back.
      * @param {DomainResult} result
      */
     // @ts-ignore
     onDomainResult (result: DomainResult) {}
 
+    /**
+     * Hook, called when a suggestion result came back.
+     * @param {SuggestionResult} result
+     */
     // @ts-ignore
     onSuggestion (result: SuggestionResult) {}
 
+    /**
+     * Hook, called when categories came back.
+     * @param {CategoriesResult[]} result
+     */
     // @ts-ignore
     onCategories (result: CategoriesResult[]) {}
 
