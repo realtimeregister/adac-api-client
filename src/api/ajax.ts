@@ -5,15 +5,15 @@ import { ActionEnum } from '../resources/enums'
  * AJAX fallback API
  */
 export default class AjaxAPI {
-    RECONNECT_TIME = 3000
-    API_KEY: string
+    reconnectTime = 3000
+    apiKey: string
     host: string
     debug: boolean
     sslDisabled: boolean
     private readonly connections: Record<string, XMLHttpRequest>
 
-    constructor(ApiKey: string, host: string, debug = false, sslDisabled = false) {
-        this.API_KEY = ApiKey
+    constructor(apiKey: string, host: string, debug = false, sslDisabled = false) {
+        this.apiKey = apiKey
         this.sslDisabled = sslDisabled
         this.debug = debug
         this.host = host
@@ -85,7 +85,7 @@ export default class AjaxAPI {
                                 console.log('ADAC: Fallback failed, reconnecting to websocket...')
                             }
                             this.onConnectionError()
-                        }, this.RECONNECT_TIME)
+                        }, this.reconnectTime)
                     }
                 }
             }
@@ -113,14 +113,14 @@ export default class AjaxAPI {
      * Get results based on a given input.
      * @param {number[]} categoryIds - array of active categories.
      * @param {string} inputValue - user input value.
-     * @param {string} TLD_SET_TOKEN - token for tld set to use.
+     * @param {string} tldSetToken - token for tld set to use.
      */
-    getInputResults(categoryIds: number[], inputValue: string, TLD_SET_TOKEN: string) {
+    getInputResults(categoryIds: number[], inputValue: string, tldSetToken: string) {
         this.sendCommand('POST', {
-            api_key: this.API_KEY,
+            api_key: this.apiKey,
             action: ActionEnum.INPUT,
             data: {
-                tld_set_token: TLD_SET_TOKEN,
+                tld_set_token: tldSetToken,
                 input: inputValue,
                 categories: categoryIds
             }
@@ -132,7 +132,7 @@ export default class AjaxAPI {
      */
     fetchCategories() {
         this.sendCommand('POST', {
-            api_key: this.API_KEY,
+            api_key: this.apiKey,
             action: ActionEnum.CATEGORIES,
             data: ''
         })
@@ -143,7 +143,7 @@ export default class AjaxAPI {
      */
     pollServer() {
         this.sendCommand('GET', {
-            api_key: this.API_KEY,
+            api_key: this.apiKey,
             action: ActionEnum.POLL,
             data: ''
         })

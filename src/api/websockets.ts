@@ -4,8 +4,8 @@ import { ActionEnum } from '../resources/enums'
 
 
 export default class WebsocketsAPI {
-    RECONNECT_TIME = 3000
-    API_KEY: string
+    reconnectTime = 3000
+    apiKey: string
     readonly connection: WebSocket
     host: string
     debug: boolean
@@ -19,7 +19,7 @@ export default class WebsocketsAPI {
      */
     constructor(ApiKey: string, host: string, debug = false, sslDisabled = false) {
         ensureSessionID()
-        this.API_KEY = ApiKey
+        this.apiKey = ApiKey
         this.host = host
         this.debug = debug
         this.sslDisabled = sslDisabled
@@ -73,7 +73,7 @@ export default class WebsocketsAPI {
                 setTimeout(() => {
                     if (this.debug) console.log('ADAC: Retry connecting to Websocket')
                     this.setupConnection()
-                }, this.RECONNECT_TIME)
+                }, this.reconnectTime)
             }
         }
 
@@ -91,14 +91,15 @@ export default class WebsocketsAPI {
      *
      * @param categoryIds
      * @param inputValue
-     * @param TLD_SET_TOKEN
+     * @param tldSetToken
+     * @param hints
      */
-    getInputResults (categoryIds: number[], inputValue: string, TLD_SET_TOKEN: string) {
+    getInputResults (categoryIds: number[], inputValue: string, tldSetToken: string, hints: Hints | null = null) {
         this.sendCommand({
-            api_key: this.API_KEY,
+            api_key: this.apiKey,
             action: ActionEnum.INPUT,
             data: {
-                tld_set_token: TLD_SET_TOKEN,
+                tld_set_token: tldSetToken,
                 input: inputValue,
                 categories: categoryIds,
             }
@@ -107,7 +108,7 @@ export default class WebsocketsAPI {
 
     fetchCategories () {
         this.sendCommand({
-            api_key: this.API_KEY,
+            api_key: this.apiKey,
             action: ActionEnum.CATEGORIES,
             data: ''
         })

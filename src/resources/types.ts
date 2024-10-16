@@ -7,6 +7,12 @@ export interface AdacUserConfig {
     ote: boolean;
     disable_ssl: boolean;
     api_host: string | null;
+    tldSetToken: string;
+    priorityListToken?: string;
+    debug?: boolean;
+    ote?: boolean;
+    disableSsl?: boolean;
+    apiHost?: string;
 }
 
 export interface DomainResult {

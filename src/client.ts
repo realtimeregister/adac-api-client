@@ -5,24 +5,25 @@ import WebsocketsAPI from './api/websockets'
 import AjaxAPI from './api/ajax'
 
 export default class ADAC {
-    CUSTOMER_API_KEY: string
-    TLD_SET_TOKEN: string
+    customerApiKey: string
+    tldSetToken: string
     debug: boolean
     ote: boolean
     disableSSL: boolean
-    API_HOST: string
+    apiHost: string
     api: WebsocketsAPI | AjaxAPI | null = null
     onReady: () => void
 
-    private constructor(ApiKey: string, userConfig: AdacUserConfig = {} as AdacUserConfig, onReady: () => void) {
-        if (!ApiKey) throw new Error('Please provide an API key')
+    private constructor(apiKey: string, userConfig: AdacUserConfig = {} as AdacUserConfig, onReady: () => void) {
+        if (!apiKey) throw new Error('Please provide an API key')
 
-        this.API_HOST = 'adac.api.yoursrs.com'
-        this.CUSTOMER_API_KEY = ApiKey
-        this.TLD_SET_TOKEN = userConfig.TLD_SET_TOKEN ?? userConfig.PRIORITY_LIST_TOKEN  ?? ''
+        this.apiHost = 'adac.api.yoursrs.com'
+        this.customerApiKey = apiKey
+        this.tldSetToken = userConfig.tldSetToken ?? userConfig.priorityListToken  ?? ''
         this.debug = userConfig.debug || false
         this.ote = userConfig.ote || false
         this.disableSSL = userConfig.disable_ssl || false
+        this.disableSSL = userConfig.disableSsl || false
 
         if (typeof onReady === 'function') {
             this.onReady = onReady
@@ -30,12 +31,12 @@ export default class ADAC {
             this.onReady = () => {}
         }
 
-        if (userConfig.api_host) {
-            this.API_HOST = userConfig.api_host
+        if (userConfig.apiHost) {
+            this.apiHost = userConfig.apiHost
         }
 
         if (userConfig.ote) {
-            this.API_HOST = 'adac.api.yoursrs-ote.com'
+            this.apiHost = 'adac.api.yoursrs-ote.com'
         }
 
         onDomReady(() => {
@@ -89,7 +90,7 @@ export default class ADAC {
      * @private
      */
     private setupWebsocketsAPI () {
-        this.api = new WebsocketsAPI(this.CUSTOMER_API_KEY, this.API_HOST, this.debug, this.disableSSL)
+        this.api = new WebsocketsAPI(this.customerApiKey, this.apiHost, this.debug, this.disableSSL)
         this.api.fetchCategories()
         this.initializeActionListeners()
     }
@@ -99,7 +100,7 @@ export default class ADAC {
      * @private
      */
     private setupAjaxAPI () {
-        this.api = new AjaxAPI(this.CUSTOMER_API_KEY, this.API_HOST, this.debug, this.disableSSL)
+        this.api = new AjaxAPI(this.customerApiKey, this.apiHost, this.debug, this.disableSSL)
         this.api.onAction = (action: string, data: SuggestionResult | CategoriesResult[] | DomainResult | Error) => {
             // @ts-expect-error dynamic function call
             this[action](data)
@@ -174,7 +175,7 @@ export default class ADAC {
         if (value !== '') {
             if (this.debug) console.log('ADAC: input given:', value)
 
-            this.api?.getInputResults(categories, value, this.TLD_SET_TOKEN)
+            this.api?.getInputResults(categories, value, this.tldSetToken)
         }
     }
 
