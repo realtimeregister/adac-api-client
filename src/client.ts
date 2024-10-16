@@ -116,11 +116,14 @@ export default class ADAC {
      * Handler for when the API couldn't connect
      */
     onConnectionError () {
-        if (this.api instanceof WebsocketsAPI) {
+        if (!window.WebSocket) {
+            this.setupAjaxAPI()
+        } else if (this.api instanceof WebsocketsAPI) {
             this.setupAjaxAPI()
         } else if (this.api instanceof AjaxAPI) {
             this.setupWebsocketsAPI()
         }
+
         if (this.api) {
             this.api.onConnectionError = this.onConnectionError.bind(this)
         }
