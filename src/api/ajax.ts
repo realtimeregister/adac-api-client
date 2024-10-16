@@ -10,21 +10,21 @@ export default class AjaxAPI {
     host: string
     debug: boolean
     sslDisabled: boolean
-    private readonly connections: Record<string, XMLHttpRequest>
+    private connection: XMLHttpRequest | null = null
 
     constructor(apiKey: string, host: string, debug = false, sslDisabled = false) {
         this.apiKey = apiKey
         this.sslDisabled = sslDisabled
         this.debug = debug
         this.host = host
-        this.connections = {}
+        this.connection = null
     }
 
     /**
      * Get url for http requests.
      * @private
      */
-    private getURL() {
+    private getURL(): string {
         return (this.sslDisabled ? 'http' : 'https') + '://' + this.host + '/ajax'
     }
 
@@ -34,7 +34,7 @@ export default class AjaxAPI {
      * @param {Command} command - command to send.
      * @private
      */
-    private sendCommand(method: string, command: Command) {
+    private sendCommand(method: string, command: Command): void {
         if (!command) return
 
         const xhr = this.setupConnection(command.action)
@@ -58,42 +58,42 @@ export default class AjaxAPI {
      * @private
      */
     private setupConnection(action: ActionEnum): XMLHttpRequest {
-        let xhr = this.connections[action]
+        if (this.connection && action === ActionEnum.POLL) {
+            return this.connection
+        }
 
-        if (!xhr) {
-            xhr = new XMLHttpRequest()
+        const connection = new XMLHttpRequest()
 
-            xhr.responseType = 'json'
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        const responseData = xhr.response
-                        if (Array.isArray(responseData)) {
-                            if (this.debug) {
-                                console.log('non-empty xhr response!')
-                            }
-                            responseData.forEach((data: any) => {
-                                this.onAction('action_' + data.action, data.data)
-                            })
+        connection.responseType = 'json'
+        connection.onreadystatechange = () => {
+            if (connection.readyState === XMLHttpRequest.DONE) {
+                if (connection.status === 200) {
+                    const responseData = connection.response
+                    if (Array.isArray(responseData)) {
+                        if (this.debug) {
+                            console.log('non-empty xhr response!')
                         }
-                        if (action === ActionEnum.POLL) {
-                            this.pollServer()
-                        }
-                    } else {
-                        setTimeout(() => {
-                            if (this.debug) {
-                                console.log('ADAC: Fallback failed, reconnecting to websocket...')
-                            }
-                            this.onConnectionError()
-                        }, this.reconnectTime)
+                        responseData.forEach((data: any) => {
+                            this.onAction('action_' + data.action, data.data)
+                        })
                     }
+                    if (action === ActionEnum.POLL) {
+                        this.pollServer()
+                    }
+                } else {
+                    setTimeout(() => {
+                        if (this.debug) {
+                            console.log('ADAC: Fallback failed, reconnecting to websocket...')
+                        }
+                        this.onConnectionError()
+                    }, this.reconnectTime)
                 }
             }
 
-            this.connections[action] = xhr
+            if (action === ActionEnum.POLL) this.connection = connection
         }
 
-        return xhr
+        return connection
     }
 
     /**
