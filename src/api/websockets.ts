@@ -1,5 +1,5 @@
 import { ensureSessionID } from '../utils'
-import { Command } from '../resources/types'
+import { Command, Hints } from '../resources/types'
 import { ActionEnum } from '../resources/enums'
 
 
@@ -102,6 +102,7 @@ export default class WebsocketsAPI {
                 tld_set_token: tldSetToken,
                 input: inputValue,
                 categories: categoryIds,
+                hints: hints || {},
             }
         })
     }

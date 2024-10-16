@@ -1,4 +1,5 @@
 import { AdacUserConfig, DomainResult, CategoriesResult, SuggestionResult, AdacErrorResponse } from './resources/types'
+import { Hints } from './resources/types'
 import { onDomReady } from './utils'
 
 import WebsocketsAPI from './api/websockets'
@@ -12,6 +13,7 @@ export default class ADAC {
     disableSSL: boolean
     apiHost: string
     api: WebsocketsAPI | AjaxAPI | null = null
+    hints: Hints | null = null
     onReady: () => void
 
     private constructor(apiKey: string, userConfig: AdacUserConfig = {} as AdacUserConfig, onReady: () => void) {
@@ -22,8 +24,8 @@ export default class ADAC {
         this.tldSetToken = userConfig.tldSetToken ?? userConfig.priorityListToken  ?? ''
         this.debug = userConfig.debug || false
         this.ote = userConfig.ote || false
-        this.disableSSL = userConfig.disable_ssl || false
         this.disableSSL = userConfig.disableSsl || false
+        this.hints = userConfig.hints || null
 
         if (typeof onReady === 'function') {
             this.onReady = onReady
@@ -52,8 +54,8 @@ export default class ADAC {
 
     }
 
-    static initialize (ApiKey: string, userConfig: AdacUserConfig, onReady: () => void): ADAC {
-        return new ADAC(ApiKey, userConfig, onReady)
+    static initialize (apiKey: string, userConfig: AdacUserConfig, onReady: () => void): ADAC {
+        return new ADAC(apiKey, userConfig, onReady)
     }
 
     /**
@@ -167,15 +169,16 @@ export default class ADAC {
     /**
      * Process input from the input element.
      * @param {string} value - value from input element
-     * @param {number[]} categories
+     * @param {number[]} categories - categories to include TLDs from in the results
+     * @param {Hints} hints - per-request configuration to pass to suggestion engines
      * @private
      */
     // @ts-ignore
-    processInput (value: string, categories: number[] = []) {
+    processInput (value: string, categories: number[] = [], hints: Hints | null = null) {
         if (value !== '') {
             if (this.debug) console.log('ADAC: input given:', value)
 
-            this.api?.getInputResults(categories, value, this.tldSetToken)
+            this.api?.getInputResults(categories, value, this.tldSetToken, hints)
         }
     }
 

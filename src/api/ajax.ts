@@ -1,4 +1,4 @@
-import { Command } from '../resources/types'
+import { Command, Hints } from '../resources/types'
 import { ActionEnum } from '../resources/enums'
 
 /**
@@ -114,15 +114,17 @@ export default class AjaxAPI {
      * @param {number[]} categoryIds - array of active categories.
      * @param {string} inputValue - user input value.
      * @param {string} tldSetToken - token for tld set to use.
+     * @param {Hints} hints - per-request configuration to pass to suggestion engines
      */
-    getInputResults(categoryIds: number[], inputValue: string, tldSetToken: string) {
+    getInputResults(categoryIds: number[], inputValue: string, tldSetToken: string, hints: Hints | null = null) {
         this.sendCommand('POST', {
             api_key: this.apiKey,
             action: ActionEnum.INPUT,
             data: {
                 tld_set_token: tldSetToken,
                 input: inputValue,
-                categories: categoryIds
+                categories: categoryIds,
+                hints: hints || {},
             }
         })
     }

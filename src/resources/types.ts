@@ -1,18 +1,14 @@
 import { ActionEnum, DomainStatusEnum } from './enums'
+import { DomainsBotOptions, NameSuggestionOptions, PrefixesSuffixesOptions, RnsOptions, SidnOptions } from './hints.types'
 
 export interface AdacUserConfig {
-    TLD_SET_TOKEN: string | null;
-    PRIORITY_LIST_TOKEN: string | null;
-    debug: boolean;
-    ote: boolean;
-    disable_ssl: boolean;
-    api_host: string | null;
     tldSetToken: string;
     priorityListToken?: string;
     debug?: boolean;
     ote?: boolean;
     disableSsl?: boolean;
     apiHost?: string;
+    hints?: Hints,
 }
 
 export interface DomainResult {
@@ -40,6 +36,15 @@ export interface CommandData {
     tld_set_token: string;
     input: string;
     categories: number[];
+    hints?: Hints
+}
+
+export interface Hints {
+    domainsbot?: DomainsBotOptions | false,
+    sidn?: SidnOptions | false,
+    rns?: RnsOptions | false,
+    'prefixes-suffixes'?: PrefixesSuffixesOptions | false,
+    namesuggestion?: NameSuggestionOptions | false
 }
 
 export interface AdacErrorResponse {
