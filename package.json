@@ -1,0 +1,34 @@
+{
+  "name": "@realtimeregister/adac-api-client",
+  "private": false,
+  "version": "1.0.0",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "license": "MIT",
+  "main": "./dist/adac-api-client.umd.js",
+  "module": "./dist/adac-api-client.es.js",
+  "scripts": {
+    "dev": "vite build --mode dev --watch",
+    "build": "tsc && vite build --mode prod",
+    "lint:fix": "eslint --fix"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/adac-api-client.es.js",
+      "require": "./dist/adac-api-client.umd.js"
+    }
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.11.1",
+    "@stylistic/eslint-plugin-ts": "^2.8.0",
+    "@types/eslint__js": "^8.42.3",
+    "eslint": "^9.11.1",
+    "terser": "^5.34.1",
+    "typescript": "^5.6.2",
+    "typescript-eslint": "^8.7.0",
+    "vite": "^5.4.1",
+    "vite-plugin-dts": "^4.2.3"
+  }
+}
