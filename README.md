@@ -10,6 +10,16 @@ JavaScript API client for our Advanced Domain Availability Checker (ADAC).
 - [Realtime Register](https://realtimeregister.com) account
 - Access to the ADAC management portal
 
+### Installation
+Yarn:
+```bash
+yarn add @realtimeregister/adac-api-client
+```
+NPM:
+```bash
+npm install @realtimeregister/adac-api-client
+```
+
 ### Basic usage
 A basic Vue 3 example could look something like this:
 
