@@ -1,5 +1,6 @@
 import { Command, Hints } from '../resources/types'
 import { ActionEnum } from '../resources/enums'
+import { ensureSessionID } from '../utils'
 
 /**
  * AJAX fallback API
@@ -13,6 +14,7 @@ export default class AjaxAPI {
     private connection: XMLHttpRequest | null = null
 
     constructor(apiKey: string, host: string, debug = false, sslDisabled = false) {
+        ensureSessionID()
         this.apiKey = apiKey
         this.sslDisabled = sslDisabled
         this.debug = debug
@@ -39,7 +41,7 @@ export default class AjaxAPI {
 
         const xhr = this.setupConnection(command.action)
 
-        xhr.open(method, this.getURL() + '?session_id=' + localStorage.getItem('sessionId'), true)
+        xhr.open(method, this.getURL() + '?session_id=' + sessionStorage.getItem('sessionId'), true)
 
         if (method === 'POST') {
             xhr.setRequestHeader('Content-Type', 'application/json')
