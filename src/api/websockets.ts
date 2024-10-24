@@ -62,7 +62,7 @@ export default class WebsocketsAPI {
      * @private
      */
     private setupWebsocketConnection () {
-        const connection = new WebSocket(this.getWebsocketUrl() + '?session_id=' + localStorage.getItem('sessionId'))
+        const connection = new WebSocket(this.getWebsocketUrl() + '?session_id=' + sessionStorage.getItem('sessionId'))
 
         connection.onclose = (event) => {
             if (this.debug) console.log('ADAC: Websocket connection closed')
