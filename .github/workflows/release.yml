@@ -1,9 +1,9 @@
-name: Push release on update master
+name: Push release on update production branch
 
 on:
   push:
     branches:
-      - master
+      - production
 
 permissions:
   contents: write
