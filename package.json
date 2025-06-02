@@ -6,6 +6,7 @@
   "files": [
     "dist"
   ],
+  "types": "./dist/index.d.ts",
   "publishConfig": {
     "access": "public"
   },
@@ -20,7 +21,8 @@
   "exports": {
     ".": {
       "import": "./dist/adac-api-client.es.js",
-      "require": "./dist/adac-api-client.umd.js"
+      "require": "./dist/adac-api-client.umd.js",
+      "types": "./dist/index.d.ts"
     }
   },
   "devDependencies": {
