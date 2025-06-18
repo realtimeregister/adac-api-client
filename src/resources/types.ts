@@ -14,7 +14,7 @@ export interface AdacUserConfig {
 export interface DomainResult {
     domain_name: string;
     status: DomainStatusEnum;
-    type: string;
+    suffix: string;
 }
 
 export interface DomainPremiumResult extends DomainResult {
