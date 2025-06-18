@@ -17,6 +17,12 @@ export interface DomainResult {
     type: string;
 }
 
+export interface DomainPremiumResult extends DomainResult {
+    type: 'premium';
+    price: number;
+    currency: string;
+}
+
 export interface SuggestionResult {
     source: string;
     domain_name: string;
