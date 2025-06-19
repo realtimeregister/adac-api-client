@@ -3,7 +3,11 @@
   "private": false,
   "version": "1.0.0",
   "type": "module",
-  "keywords": ["realtimeregister", "domains", "tld"],
+  "keywords": [
+    "realtimeregister",
+    "domains",
+    "tld"
+  ],
   "files": [
     "dist"
   ],
