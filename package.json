@@ -17,7 +17,8 @@
   "scripts": {
     "dev": "vite build --mode dev --watch",
     "build": "tsc && vite build --mode prod",
-    "lint:fix": "eslint --fix"
+    "lint:fix": "eslint --fix",
+    "preview": "vite build --mode prod && yalc push"
   },
   "exports": {
     ".": {
@@ -41,6 +42,7 @@
     "typescript": "^5.6.2",
     "typescript-eslint": "^8.7.0",
     "vite": "^5.4.1",
-    "vite-plugin-dts": "^4.2.3"
+    "vite-plugin-dts": "^4.2.3",
+    "yalc": "^1.0.0-pre.53"
   }
 }
