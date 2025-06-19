@@ -1,4 +1,11 @@
-import { AdacUserConfig, DomainResult, CategoriesResult, SuggestionResult, AdacErrorResponse } from './resources/types'
+import {
+    AdacUserConfig,
+    DomainResult,
+    CategoriesResult,
+    SuggestionResult,
+    AdacErrorResponse,
+    DomainPremiumResult
+} from './resources/types'
 import { Hints } from './resources/types'
 import { onDomReady } from './utils'
 
@@ -60,10 +67,10 @@ export default class ADAC {
 
     /**
      * Hook, called when a domain result came back.
-     * @param {DomainResult} result
+     * @param {DomainResult | DomainPremiumResult} result
      */
     // @ts-ignore
-    onDomainResult (result: DomainResult) {}
+    onDomainResult (result: DomainResult | DomainPremiumResult) {}
 
     /**
      * Hook, called when a suggestion result came back.
@@ -103,7 +110,7 @@ export default class ADAC {
      */
     private setupAjaxAPI () {
         this.api = new AjaxAPI(this.customerApiKey, this.apiHost, this.debug, this.disableSSL)
-        this.api.onAction = (action: string, data: SuggestionResult | CategoriesResult[] | DomainResult | Error) => {
+        this.api.onAction = (action: string, data: SuggestionResult | CategoriesResult[] | DomainResult | DomainPremiumResult | Error) => {
             // @ts-expect-error dynamic function call
             this[action](data)
         }
@@ -131,10 +138,10 @@ export default class ADAC {
 
     /**
      * Handler for domain_status action
-     * @param {DomainResult} domainResult
+     * @param {DomainResult | DomainPremiumResult} domainResult
      */
     // @ts-expect-error Call determined by string value in connection.onmessage
-    private action_domain_status (domainResult: DomainResult) {
+    private action_domain_status (domainResult: DomainResult | DomainPremiumResult) {
         if (this.debug) console.log('ADAC: action_domain_status() progress: ', domainResult)
         this.onDomainResult(domainResult)
     }
