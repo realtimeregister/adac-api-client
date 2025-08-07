@@ -1,6 +1,5 @@
-import { Command, Hints } from '../resources/types'
-import { ActionEnum } from '../resources/enums'
-import { ensureSessionID } from '../utils'
+import { Command, Hints, Action } from '@/resources/types.ts'
+import { ensureSessionID } from '@/utils.ts'
 
 /**
  * AJAX fallback API
@@ -56,11 +55,11 @@ export default class AjaxAPI {
 
     /**
      * Set up a connection over http(s)
-     * @param {ActionEnum} action - action to setup
+     * @param {Action} action - action to setup
      * @private
      */
-    private setupConnection(action: ActionEnum): XMLHttpRequest {
-        if (this.connection && action === ActionEnum.POLL) {
+    private setupConnection(action: Action): XMLHttpRequest {
+        if (this.connection && action === 'poll') {
             return this.connection
         }
 
@@ -79,7 +78,7 @@ export default class AjaxAPI {
                             this.onAction('action_' + data.action, data.data)
                         })
                     }
-                    if (action === ActionEnum.POLL) {
+                    if (action === 'poll') {
                         this.pollServer()
                     }
                 } else {
@@ -92,7 +91,7 @@ export default class AjaxAPI {
                 }
             }
 
-            if (action === ActionEnum.POLL) this.connection = connection
+            if (action === 'poll') this.connection = connection
         }
 
         return connection
@@ -121,7 +120,7 @@ export default class AjaxAPI {
     getInputResults(categoryIds: number[], inputValue: string, tldSetToken: string, hints: Hints | null = null) {
         this.sendCommand('POST', {
             api_key: this.apiKey,
-            action: ActionEnum.INPUT,
+            action: 'input',
             data: {
                 tld_set_token: tldSetToken,
                 input: inputValue,
@@ -137,7 +136,7 @@ export default class AjaxAPI {
     fetchCategories() {
         this.sendCommand('POST', {
             api_key: this.apiKey,
-            action: ActionEnum.CATEGORIES,
+            action: 'categories',
             data: ''
         })
     }
@@ -148,7 +147,7 @@ export default class AjaxAPI {
     pollServer() {
         this.sendCommand('GET', {
             api_key: this.apiKey,
-            action: ActionEnum.POLL,
+            action: 'poll',
             data: ''
         })
     }

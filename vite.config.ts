@@ -1,8 +1,9 @@
+import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 
 export default defineConfig({
-    build: {
+    build: { 
         minify: 'terser',
         outDir: 'dist',
         sourcemap: true,
@@ -12,6 +13,11 @@ export default defineConfig({
             fileName: (format: any) => `adac-api-client.${format}.js`,
             formats: ['es', 'umd']
         }
+    },
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url))
+      }
     },
     plugins: [
         dts({
