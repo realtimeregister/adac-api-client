@@ -14,6 +14,7 @@ TypeScript API client for our Advanced Domain Availability Checker (ADAC).
 ```bash
 yarn add @realtimeregister/adac-api-client
 ```
+OR
 ```bash
 npm install @realtimeregister/adac-api-client
 ```
