@@ -1,6 +1,5 @@
-import { ensureSessionID } from '../utils'
-import { Command, Hints } from '../resources/types'
-import { ActionEnum } from '../resources/enums'
+import { ensureSessionID } from '@/utils.ts'
+import type { Command, Hints } from '@/resources/types.ts'
 
 
 export default class WebsocketsAPI {
@@ -97,7 +96,7 @@ export default class WebsocketsAPI {
     getInputResults (categoryIds: number[], inputValue: string, tldSetToken: string, hints: Hints | null = null) {
         this.sendCommand({
             api_key: this.apiKey,
-            action: ActionEnum.INPUT,
+            action: 'input',
             data: {
                 tld_set_token: tldSetToken,
                 input: inputValue,
@@ -110,7 +109,7 @@ export default class WebsocketsAPI {
     fetchCategories () {
         this.sendCommand({
             api_key: this.apiKey,
-            action: ActionEnum.CATEGORIES,
+            action: 'categories',
             data: ''
         })
     }

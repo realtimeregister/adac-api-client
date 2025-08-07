@@ -16,11 +16,29 @@ export interface AdacUserConfig {
     hints?: Hints,
 }
 
+export const DomainStatuses = {
+  DOMAIN_STATUS_WAITING: 0,
+  DOMAIN_STATUS_AVAILABLE: 1,
+  DOMAIN_STATUS_TAKEN: 2,
+  DOMAIN_STATUS_INVALID: 3,
+  DOMAIN_STATUS_ERROR: 4,
+  DOMAIN_STATUS_UNKNOWN: 5
+}
+export type DomainStatus = (typeof DomainStatuses)[keyof typeof DomainStatuses]
+
 export interface DomainResult {
     domain_name: string;
-    status: DomainStatusEnum;
+    status: DomainStatus;
     suffix: string;
 }
+
+export const Actions = {
+  input: 'input',
+  CATEGORIES: 'categories',
+  POLL: 'poll',
+  ERROR: 'error',
+} as const
+export type Action = (typeof Actions)[keyof typeof Actions]
 
 export interface DomainPremiumResult extends DomainResult {
     type: 'premium';
@@ -39,7 +57,7 @@ export type CategoriesResult = [number, string]
 
 export interface Command {
     api_key: string;
-    action: ActionEnum;
+    action: Action;
     data: CommandData | string
 }
 
@@ -59,6 +77,6 @@ export interface Hints {
 }
 
 export interface AdacErrorResponse {
-    action: ActionEnum.ERROR,
+    action: (typeof Actions)['ERROR'],
     data: string
 }

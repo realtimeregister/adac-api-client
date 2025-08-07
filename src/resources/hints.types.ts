@@ -1,11 +1,12 @@
-enum DomainsBotLanguagesEnum {
-    en = 'English',
-    nl = 'Dutch',
-    de = 'German',
-    es = 'Spanish',
-    it = 'Italian',
-    fr = 'French'
-}
+export const DomainsBotLanguages = {
+  en: 'English',
+  nl: 'Dutch',
+  de: 'German',
+  es: 'Spanish',
+  it: 'Italian',
+  fr: 'French'
+} as const
+export type DomainsBotLanguage = keyof typeof DomainsBotLanguages
 
 export interface DomainsBotOptions {
     adult?: boolean;
@@ -15,7 +16,7 @@ export interface DomainsBotOptions {
     tld_no?: string;
     tld_ok?: string;
     tld_only?: string;
-    languages?: DomainsBotLanguagesEnum[],
+    languages?: DomainsBotLanguage[],
     func?: 1 | 2 | 3 | 4 // literals, because enum can't have numeric values.
 }
 
@@ -43,33 +44,35 @@ export interface PrefixesSuffixesOptions {
     suffixes?: string[]
 }
 
-enum NameSuggestionTLDsEnum {
-    com = 'com',
-    net = 'net',
-    cc = 'cc'
-}
+export const NameSuggestionTLDs = {
+  com: 'com',
+  net: 'net',
+  cc :'cc'
+} as const
+export type NameSuggestionTLD = keyof typeof NameSuggestionTLDs
 
-enum NameSuggestionLanguageEnum {
-    eng = 'English',
-    spa = 'Spanish',
-    ita = 'Italian',
-    jpn = 'Japanese',
-    tur = 'Turkish',
-    chi = 'Chinese',
-    ger = 'German',
-    por = 'Portuguese',
-    fre = 'French',
-    kor = 'Korean',
-    vie = 'Vietnamese',
-    dut = 'Dutch'
-}
+export const NameSuggestionLanguages = {
+  eng: 'English',
+  spa: 'Spanish',
+  ita: 'Italian',
+  jpn: 'Japanese',
+  tur: 'Turkish',
+  chi: 'Chinese',
+  ger: 'German',
+  por: 'Portuguese',
+  fre: 'French',
+  kor: 'Korean',
+  vie: 'Vietnamese',
+  dut: 'Dutch'
+} as const
+export type NameSuggestionLanguage = keyof typeof NameSuggestionLanguages
 
 export interface NameSuggestionOptions {
-    tlds?: NameSuggestionTLDsEnum[],
+    tlds?: NameSuggestionTLD[],
     use_dashes?: boolean,
     use_numbers?: boolean,
     use_idns?: boolean,
-    lang?: NameSuggestionLanguageEnum,
+    lang?: NameSuggestionLanguage,
     include_geolocation?: boolean,
     max_results?: number,
     sensitive_content_filter?: boolean,
