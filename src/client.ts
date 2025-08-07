@@ -5,12 +5,12 @@ import {
     SuggestionResult,
     AdacErrorResponse,
     DomainPremiumResult
-} from './resources/types'
-import { Hints } from './resources/types'
-import { onDomReady } from './utils'
+} from '@/resources/types.ts'
+import { Hints } from '@/resources/types.ts'
+import { onDomReady } from '@/utils.ts'
 
-import WebsocketsAPI from './api/websockets'
-import AjaxAPI from './api/ajax'
+import WebsocketsAPI from '@/api/websockets.ts'
+import AjaxAPI from '@/api/ajax.ts'
 
 export default class ADAC {
     customerApiKey: string

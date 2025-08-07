@@ -1,3 +1,3 @@
-import ADAC from './client'
+import ADAC from '@/client.ts'
 
 export default ADAC

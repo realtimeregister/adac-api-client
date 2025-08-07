@@ -1,5 +1,10 @@
-import { ActionEnum, DomainStatusEnum } from './enums'
-import { DomainsBotOptions, NameSuggestionOptions, PrefixesSuffixesOptions, RnsOptions, SidnOptions } from './hints.types'
+import {
+  DomainsBotOptions,
+  NameSuggestionOptions,
+  PrefixesSuffixesOptions,
+  RnsOptions,
+  SidnOptions
+} from '@/resources/hints.types.ts'
 
 export interface AdacUserConfig {
     tldSetToken: string;
