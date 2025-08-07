@@ -23,7 +23,7 @@ export default class ADAC {
     hints: Hints | null = null
     onReady: () => void
 
-    private constructor(apiKey: string, userConfig: AdacUserConfig = {} as AdacUserConfig, onReady: () => void) {
+    private constructor(apiKey: string, userConfig: AdacUserConfig = {} as AdacUserConfig, onReady?: () => void) {
         if (!apiKey) throw new Error('Please provide an API key')
 
         this.apiHost = 'adac.api.yoursrs.com'
@@ -61,7 +61,7 @@ export default class ADAC {
 
     }
 
-    static initialize (apiKey: string, userConfig: AdacUserConfig, onReady: () => void): ADAC {
+    static initialize (apiKey: string, userConfig: AdacUserConfig, onReady?: () => void): ADAC {
         return new ADAC(apiKey, userConfig, onReady)
     }
 
