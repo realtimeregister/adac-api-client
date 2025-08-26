@@ -193,6 +193,19 @@ export default class ADAC {
     }
 
     /**
+     * Get domain suggestions for a given input.
+     * @param {string} value
+     * @param {Hints} hints
+     */
+    getSuggestions (value: string, hints?: Hints) {
+      if (value !== '') {
+        if (this.debug) console.log('ADAC: get suggestions for:', value)
+
+        this.api?.getSuggestions(value, hints)
+      }
+    }
+
+    /**
      * Initialize the websocket listeners.
      * @private
      */
@@ -207,6 +220,7 @@ export default class ADAC {
 
                 connection.onmessage = (message) => {
                     const data = JSON.parse(message.data)
+                    if (data.action === 'done') return
                     // @ts-expect-error Can be ignored, the action is called dynamically
                     this['action_' + data.action](data.data)
                 }

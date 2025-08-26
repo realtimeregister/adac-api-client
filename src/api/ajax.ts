@@ -131,6 +131,22 @@ export default class AjaxAPI {
     }
 
     /**
+     * Get domain suggestions for a given input.
+     * @param {string} input
+     * @param {Hints} hints
+     */
+    getSuggestions (input: string, hints?: Hints) {
+      this.sendCommand('POST', {
+        api_key: this.apiKey,
+        action: 'suggest',
+        data: {
+          input,
+          hints
+        }
+      })
+    }
+
+    /**
      * Fetch all available categories.
      */
     fetchCategories() {
