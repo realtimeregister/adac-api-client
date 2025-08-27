@@ -21,6 +21,7 @@ export default class ADAC {
     apiHost: string
     api: WebsocketsAPI | AjaxAPI | null = null
     hints: Hints | null = null
+    hints: Hints
     onReady: () => void
 
     private constructor(apiKey: string, userConfig: AdacUserConfig = {} as AdacUserConfig, onReady?: () => void) {
@@ -32,7 +33,7 @@ export default class ADAC {
         this.debug = userConfig.debug || false
         this.ote = userConfig.ote || false
         this.disableSSL = userConfig.disableSsl || false
-        this.hints = userConfig.hints || null
+        this.hints = userConfig.hints || {}
 
         if (typeof onReady === 'function') {
             this.onReady = onReady
@@ -184,12 +185,12 @@ export default class ADAC {
      * @private
      */
     // @ts-ignore
-    processInput (value: string, categories: number[] = [], hints: Hints | null = null) {
-        if (value !== '') {
-            if (this.debug) console.log('ADAC: input given:', value)
+    processInput (value: string, categories: number[] = [], hints: Hints = {}) {
+      if (value !== '') {
+          if (this.debug) console.log('ADAC: input given:', value)
 
-            this.api?.getInputResults(categories, value, this.tldSetToken, hints)
-        }
+          this.api?.getInputResults(categories, value, this.tldSetToken, { ...this.hints, ...hints })
+      }
     }
 
     /**
@@ -197,11 +198,11 @@ export default class ADAC {
      * @param {string} value
      * @param {Hints} hints
      */
-    getSuggestions (value: string, hints?: Hints) {
+    getSuggestions (value: string, hints: Hints = {}) {
       if (value !== '') {
         if (this.debug) console.log('ADAC: get suggestions for:', value)
 
-        this.api?.getSuggestions(value, hints)
+        this.api?.getSuggestions(value, { ...this.hints, ...hints })
       }
     }
 
