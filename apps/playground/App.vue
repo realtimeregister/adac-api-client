@@ -19,7 +19,7 @@ const value = ref('')
 const suggestions = ref([])
 
 const adac = ADAC.initialize(import.meta.env.VITE_ADAC_API_KEY, {
-  apiHost: 'localhost:8082',
+  apiHost: import.meta.env.VITE_ADAC_API_HOST,
   tldSetToken: import.meta.env.VITE_ADAC_TLD_SET_TOKEN,
   debug: true,
   disableSsl: true
