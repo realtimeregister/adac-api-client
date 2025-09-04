@@ -30,6 +30,8 @@ export interface DomainResult {
     domain_name: string;
     status: DomainStatus;
     suffix: string;
+    /** Reason for invalid domain status. Only present if status is invalid. */
+    reason?: string;
 }
 
 export const Actions = {
