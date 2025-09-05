@@ -21,6 +21,7 @@
   "scripts": {
     "dev": "vite build --mode dev --watch",
     "build": "tsc && vite build --mode prod",
+    "playground": "vite",
     "lint:fix": "eslint --fix",
     "preview": "vite build --mode prod && yalc push"
   },
@@ -41,6 +42,7 @@
     "@stylistic/eslint-plugin-ts": "^2.8.0",
     "@types/eslint__js": "^8.42.3",
     "@types/node": "^24.2.0",
+    "@vitejs/plugin-vue": "^6.0.1",
     "eslint": "^9.11.1",
     "semantic-release": "^24.1.3",
     "terser": "^5.34.1",
@@ -48,6 +50,7 @@
     "typescript-eslint": "^8.7.0",
     "vite": "^5.4.1",
     "vite-plugin-dts": "^4.2.3",
+    "vue": "^3.5.20",
     "yalc": "^1.0.0-pre.53",
     "yarn-audit-fix": "^10.1.1"
   }

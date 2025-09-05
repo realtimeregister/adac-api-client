@@ -15,7 +15,9 @@ export default tsEslint.config(
       'semi': ['warn', 'never'],
       'quotes': ['error', 'single'],
       'stylistic/object-curly-spacing': ['error', 'always'],
+      'no-unused-vars': 'off',
       '@typescript-eslint/no-empty-function': 'off',
+      '@typescript-eslint/consistent-type-definitions': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/ban-ts-comment': 'off',
       '@typescript-eslint/no-unused-vars': [

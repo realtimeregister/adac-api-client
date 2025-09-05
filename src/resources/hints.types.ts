@@ -76,4 +76,6 @@ export interface NameSuggestionOptions {
     include_geolocation?: boolean,
     max_results?: number,
     sensitive_content_filter?: boolean,
+    use_ai?: boolean,
+    choices?: Record<string, string>,
 }
