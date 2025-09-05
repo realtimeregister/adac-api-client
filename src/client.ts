@@ -9,8 +9,7 @@ import {
 import { Hints } from '@/resources/types.ts'
 import { onDomReady } from '@/utils.ts'
 
-import WebsocketsAPI from '@/api/websockets.ts'
-import AjaxAPI from '@/api/ajax.ts'
+import WebsocketsAPI from '@/api.ts'
 
 export default class ADAC {
     customerApiKey: string
@@ -19,8 +18,8 @@ export default class ADAC {
     ote: boolean
     disableSSL: boolean
     apiHost: string
-    api: WebsocketsAPI | AjaxAPI | null = null
-    hints: Hints | null = null
+    api?: WebsocketsAPI
+    hints: Hints
     onReady: () => void
 
     private constructor(apiKey: string, userConfig: AdacUserConfig = {} as AdacUserConfig, onReady?: () => void) {
@@ -32,7 +31,7 @@ export default class ADAC {
         this.debug = userConfig.debug || false
         this.ote = userConfig.ote || false
         this.disableSSL = userConfig.disableSsl || false
-        this.hints = userConfig.hints || null
+        this.hints = userConfig.hints || {}
 
         if (typeof onReady === 'function') {
             this.onReady = onReady
@@ -49,14 +48,7 @@ export default class ADAC {
         }
 
         onDomReady(() => {
-            if (!window.WebSocket) {
-                this.setupAjaxAPI()
-            } else {
-                this.setupWebsocketsAPI()
-            }
-
-            // @ts-expect-error Api will be defined in either setupWebSocketsAPI() or setupAjaxAPI()
-            this.api.onConnectionError = this.onConnectionError.bind(this)
+            this.setupWebsocketsAPI()
         })
 
     }
@@ -101,39 +93,18 @@ export default class ADAC {
     private setupWebsocketsAPI () {
         this.api = new WebsocketsAPI(this.customerApiKey, this.apiHost, this.debug, this.disableSSL)
         this.api.fetchCategories()
+        this.api.onConnectionError = this.onConnectionError.bind(this)
         this.initializeActionListeners()
-    }
-
-    /**
-     * Set up the Ajax API
-     * @private
-     */
-    private setupAjaxAPI () {
-        this.api = new AjaxAPI(this.customerApiKey, this.apiHost, this.debug, this.disableSSL)
-        this.api.onAction = (action: string, data: SuggestionResult | CategoriesResult[] | DomainResult | DomainPremiumResult | Error) => {
-            // @ts-expect-error dynamic function call
-            this[action](data)
-        }
-        this.api.fetchCategories()
-        this.api.pollServer()
-        this.onReady()
     }
 
     /**
      * Handler for when the API couldn't connect
      */
     onConnectionError () {
-        if (!window.WebSocket) {
-            this.setupAjaxAPI()
-        } else if (this.api instanceof WebsocketsAPI) {
-            this.setupAjaxAPI()
-        } else if (this.api instanceof AjaxAPI) {
-            this.setupWebsocketsAPI()
-        }
-
-        if (this.api) {
-            this.api.onConnectionError = this.onConnectionError.bind(this)
-        }
+        // Retry connection after 1 second
+        setTimeout(() => {
+          this.setupWebsocketsAPI()
+        }, 1000)
     }
 
     /**
@@ -184,12 +155,12 @@ export default class ADAC {
      * @private
      */
     // @ts-ignore
-    processInput (value: string, categories: number[] = [], hints: Hints | null = null) {
-        if (value !== '') {
-            if (this.debug) console.log('ADAC: input given:', value)
+    processInput (value: string, categories: number[] = [], hints: Hints = {}) {
+      if (value !== '') {
+          if (this.debug) console.log('ADAC: input given:', value)
 
-            this.api?.getInputResults(categories, value, this.tldSetToken, hints)
-        }
+          this.api?.getInputResults(categories, value, this.tldSetToken, { ...this.hints, ...hints })
+      }
     }
 
     /**
@@ -197,11 +168,11 @@ export default class ADAC {
      * @param {string} value
      * @param {Hints} hints
      */
-    getSuggestions (value: string, hints?: Hints) {
+    getSuggestions (value: string, hints: Hints = {}) {
       if (value !== '') {
         if (this.debug) console.log('ADAC: get suggestions for:', value)
 
-        this.api?.getSuggestions(value, hints)
+        this.api?.getSuggestions(value, { ...this.hints, ...hints })
       }
     }
 
@@ -210,22 +181,18 @@ export default class ADAC {
      * @private
      */
     private initializeActionListeners () {
-        if (this.api instanceof WebsocketsAPI) {
-            const connection = this.api.getConnection()
+      const connection = this.api!.getConnection()
 
-            if (connection) {
-                connection.onopen = () => {
-                    this.onReady()
-                }
+      if (connection) {
+          connection.onopen = () => this.onReady()
 
-                connection.onmessage = (message) => {
-                    const data = JSON.parse(message.data)
-                    if (data.action === 'done') return
-                    // @ts-expect-error Can be ignored, the action is called dynamically
-                    this['action_' + data.action](data.data)
-                }
-            }
-        }
+          connection.onmessage = (message) => {
+              const data = JSON.parse(message.data)
+              if (data.action === 'done') return // No further action required
+              // @ts-expect-error Can be ignored, the action is called dynamically
+              this['action_' + data.action](data.data)
+          }
+      }
     }
 
 }
