@@ -62,6 +62,7 @@ export default class ADAC {
      * @param {DomainResult | DomainPremiumResult} result
      */
     // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onDomainResult (result: DomainResult | DomainPremiumResult) {}
 
     /**
@@ -69,6 +70,7 @@ export default class ADAC {
      * @param {SuggestionResult} result
      */
     // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuggestion (result: SuggestionResult) {}
 
     /**
@@ -76,6 +78,7 @@ export default class ADAC {
      * @param {CategoriesResult[]} result
      */
     // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onCategories (result: CategoriesResult[]) {}
 
     /**
@@ -83,6 +86,7 @@ export default class ADAC {
      * @param {AdacErrorResponse} error
      */
     // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onClientError (error: AdacErrorResponse) {}
 
 

@@ -1,12 +1,16 @@
 // @ts-check
+import { defineConfig } from 'eslint/config'
 import stylistic from '@stylistic/eslint-plugin-ts'
 import eslint from '@eslint/js'
 import tsEslint from 'typescript-eslint'
 
-export default tsEslint.config(
+export default defineConfig(
   eslint.configs.recommended,
-  ...tsEslint.configs.recommended,
-  ...tsEslint.configs.stylistic,
+  tsEslint.configs.recommended,
+  tsEslint.configs.stylistic,
+  {
+    ignores: ['dist', 'node_modules', '**/*.d.ts', 'apps/**/*']
+  },
   {
     plugins: {
       'stylistic': stylistic,

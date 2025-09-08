@@ -22,6 +22,7 @@
     "dev": "vite build --mode dev --watch",
     "build": "tsc && vite build --mode prod",
     "playground": "vite",
+    "lint": "eslint",
     "lint:fix": "eslint --fix",
     "preview": "vite build --mode prod && yalc push"
   },
