@@ -87,7 +87,7 @@ export default class WebsocketsAPI {
     }
 
     /**
-     *
+     * Get domain results and suggestions based on a given input.
      * @param categoryIds
      * @param inputValue
      * @param tldSetToken
@@ -104,6 +104,22 @@ export default class WebsocketsAPI {
                 hints: hints || {},
             }
         })
+    }
+
+  /**
+   * Get domain suggestions for a given input.
+   * @param {string} input
+   * @param {Hints} hints
+   */
+    getSuggestions (input: string, hints?: Hints) {
+      this.sendCommand({
+        api_key: this.apiKey,
+        action: 'suggest',
+        data: {
+          input,
+          hints
+        }
+      })
     }
 
     fetchCategories () {

@@ -20,7 +20,6 @@ export type {
   SidnOptions,
   RnsOptions,
   PrefixesSuffixesOptions,
-  NameSuggestionTLD,
   NameSuggestionLanguage,
   NameSuggestionOptions
 } from '@/resources/hints.types.ts'

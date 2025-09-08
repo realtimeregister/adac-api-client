@@ -30,6 +30,8 @@ export interface DomainResult {
     domain_name: string;
     status: DomainStatus;
     suffix: string;
+    /** Reason for invalid domain status. Only present if status is invalid. */
+    reason?: string;
 }
 
 export const Actions = {
@@ -37,16 +39,17 @@ export const Actions = {
   CATEGORIES: 'categories',
   POLL: 'poll',
   ERROR: 'error',
+  SUGGEST: 'suggest'
 } as const
 export type Action = (typeof Actions)[keyof typeof Actions]
 
-export interface DomainPremiumResult extends DomainResult {
+export type DomainPremiumResult = DomainResult & {
     type: 'premium';
     price: number;
     currency: string;
 }
 
-export interface SuggestionResult {
+export type SuggestionResult = {
     source: string;
     domain_name: string;
     suffix: string;
@@ -55,20 +58,25 @@ export interface SuggestionResult {
 
 export type CategoriesResult = [number, string]
 
-export interface Command {
+export type Command = {
     api_key: string;
     action: Action;
-    data: CommandData | string
+    data: CommandData | SuggestionCommandData | string
 }
 
-export interface CommandData {
+export type CommandData = {
     tld_set_token: string;
     input: string;
     categories: number[];
     hints?: Hints
 }
 
-export interface Hints {
+export type SuggestionCommandData = {
+ input: string,
+ hints?: Hints
+}
+
+export type Hints = {
     domainsbot?: DomainsBotOptions | false,
     sidn?: SidnOptions | false,
     rns?: RnsOptions | false,
@@ -76,7 +84,7 @@ export interface Hints {
     namesuggestion?: NameSuggestionOptions | false
 }
 
-export interface AdacErrorResponse {
+export type AdacErrorResponse = {
     action: (typeof Actions)['ERROR'],
     data: string
 }
