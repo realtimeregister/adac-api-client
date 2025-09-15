@@ -44,13 +44,6 @@ export interface PrefixesSuffixesOptions {
     suffixes?: string[]
 }
 
-export const NameSuggestionTLDs = {
-  com: 'com',
-  net: 'net',
-  cc :'cc'
-} as const
-export type NameSuggestionTLD = keyof typeof NameSuggestionTLDs
-
 export const NameSuggestionLanguages = {
   eng: 'English',
   spa: 'Spanish',
@@ -68,7 +61,7 @@ export const NameSuggestionLanguages = {
 export type NameSuggestionLanguage = keyof typeof NameSuggestionLanguages
 
 export interface NameSuggestionOptions {
-    tlds?: NameSuggestionTLD[],
+    tlds?: string[],
     use_dashes?: boolean,
     use_numbers?: boolean,
     use_idns?: boolean,
@@ -76,4 +69,6 @@ export interface NameSuggestionOptions {
     include_geolocation?: boolean,
     max_results?: number,
     sensitive_content_filter?: boolean,
+    use_ai?: boolean,
+    choices?: Record<string, string>,
 }
