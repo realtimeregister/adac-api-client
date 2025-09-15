@@ -75,6 +75,10 @@ adac.onSuggestion = (result: SuggestionResult) => {
   }
 }
 
+adac.onDone = () => {
+  console.log('ADAC: Done generating suggestions')
+}
+
 const purgeOnChange = () => {
   domains.value = {}
   suggestions.value = {}
