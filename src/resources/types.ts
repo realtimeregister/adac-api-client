@@ -35,11 +35,18 @@ export interface DomainResult {
 }
 
 export const Actions = {
+  /** Action to indicate a result after processing an input. */
   input: 'input',
+  /** Action to indicate a 'categories' result. */
   CATEGORIES: 'categories',
+  /** Action to indicate a polling action. */
   POLL: 'poll',
+  /** Action to indicate an error. */
   ERROR: 'error',
-  SUGGEST: 'suggest'
+  /** Action to indicate a suggestion result. */
+  SUGGEST: 'suggest',
+  /** Action to indicate that all suggestions have been generated. */
+  DONE: 'done'
 } as const
 export type Action = (typeof Actions)[keyof typeof Actions]
 

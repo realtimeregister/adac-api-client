@@ -1,10 +1,10 @@
 import {
-    AdacUserConfig,
-    DomainResult,
-    CategoriesResult,
-    SuggestionResult,
-    AdacErrorResponse,
-    DomainPremiumResult
+  AdacUserConfig,
+  DomainResult,
+  CategoriesResult,
+  SuggestionResult,
+  AdacErrorResponse,
+  DomainPremiumResult
 } from '@/resources/types.ts'
 import { Hints } from '@/resources/types.ts'
 import { onDomReady } from '@/utils.ts'
@@ -82,6 +82,12 @@ export default class ADAC {
     onCategories (result: CategoriesResult[]) {}
 
     /**
+     * Hook, called when all suggestions have been generated.
+     */
+    // @ts-ignore
+    onDone () {}
+
+    /**
      * Hook, called when an error has occurred
      * @param {AdacErrorResponse} error
      */
@@ -152,6 +158,16 @@ export default class ADAC {
     }
 
     /**
+     * Handler for `done` action. The `done` action is called when the API has finished generating suggestions.
+     * @private
+     */
+    // @ts-expect-error Call determined by string value in connection.onmessage
+    private action_done () {
+      if (this.debug) console.log('ADAC: action_done()')
+      this.onDone()
+    }
+
+    /**
      * Process input from the input element.
      * @param {string} value - value from input element
      * @param {number[]} categories - categories to include TLDs from in the results
@@ -192,7 +208,6 @@ export default class ADAC {
 
           connection.onmessage = (message) => {
               const data = JSON.parse(message.data)
-              if (data.action === 'done') return // No further action required
               // @ts-expect-error Can be ignored, the action is called dynamically
               this['action_' + data.action](data.data)
           }
