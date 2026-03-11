@@ -20,8 +20,9 @@
   "module": "./dist/adac-api-client.es.js",
   "scripts": {
     "dev": "vite build --mode dev --watch",
+    "dev:playground": "APP_NAME=playground vite",
+    "dev:pricing": "APP_NAME=pricingExample vite",
     "build": "tsc && vite build --mode prod",
-    "playground": "vite",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
     "preview": "vite build --mode prod && yalc push"
