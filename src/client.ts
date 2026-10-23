@@ -18,9 +18,12 @@ export default class ADAC {
     ote: boolean
     disableSSL: boolean
     apiHost: string
+    reconnectTime: number
+    maxReconnectTime: number
     api?: WebsocketsAPI
     hints: Hints
     onReady: () => void
+    private closed = false
 
     private constructor(apiKey: string, userConfig: AdacUserConfig = {} as AdacUserConfig, onReady?: () => void) {
         if (!apiKey) throw new Error('Please provide an API key')
@@ -32,6 +35,8 @@ export default class ADAC {
         this.ote = userConfig.ote || false
         this.disableSSL = userConfig.disableSsl || false
         this.hints = userConfig.hints || {}
+        this.reconnectTime = userConfig.reconnectTime ?? 1000
+        this.maxReconnectTime = userConfig.maxReconnectTime ?? 10000
 
         if (typeof onReady === 'function') {
             this.onReady = onReady
@@ -95,26 +100,30 @@ export default class ADAC {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onClientError (error: AdacErrorResponse) {}
 
+    /**
+     * Hook, called when the connection failed. The API reconnects by itself.
+     */
+    onConnectionError () {}
+
 
     /**
      * Set up the API that works via websockets.
      * @private
      */
     private setupWebsocketsAPI () {
-        this.api = new WebsocketsAPI(this.customerApiKey, this.apiHost, this.debug, this.disableSSL)
+        if (this.closed) return
+
+        this.api = new WebsocketsAPI({
+            apiKey: this.customerApiKey,
+            host: this.apiHost,
+            debug: this.debug,
+            sslDisabled: this.disableSSL,
+            reconnectTime: this.reconnectTime,
+            maxReconnectTime: this.maxReconnectTime,
+        })
         this.api.fetchCategories()
         this.api.onConnectionError = this.onConnectionError.bind(this)
         this.initializeActionListeners()
-    }
-
-    /**
-     * Handler for when the API couldn't connect
-     */
-    onConnectionError () {
-        // Retry connection after 1 second
-        setTimeout(() => {
-          this.setupWebsocketsAPI()
-        }, 1000)
     }
 
     /**
@@ -197,20 +206,26 @@ export default class ADAC {
     }
 
     /**
+     * Stop the client: close the connection and stop reconnecting.
+     */
+    close (): void {
+        this.closed = true
+        this.api?.close()
+    }
+
+    /**
      * Initialize the websocket listeners.
      * @private
      */
-    private initializeActionListeners () {
-      const connection = this.api!.getConnection()
+    private initializeActionListeners (): void {
+      const api = this.api!
 
-      if (connection) {
-          connection.onopen = () => this.onReady()
+      api.onOpen = () => this.onReady()
 
-          connection.onmessage = (message) => {
-              const data = JSON.parse(message.data)
-              // @ts-expect-error Can be ignored, the action is called dynamically
-              this['action_' + data.action](data.data)
-          }
+      api.onMessage = (message) => {
+          const data = JSON.parse(message.data)
+          // @ts-expect-error Can be ignored, the action is called dynamically
+          this['action_' + data.action](data.data)
       }
     }
 
