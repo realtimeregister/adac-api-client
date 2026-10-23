@@ -18,6 +18,8 @@ export default class ADAC {
     ote: boolean
     disableSSL: boolean
     apiHost: string
+    reconnectTime: number
+    maxReconnectTime: number
     api?: WebsocketsAPI
     hints: Hints
     onReady: () => void
@@ -33,6 +35,8 @@ export default class ADAC {
         this.ote = userConfig.ote || false
         this.disableSSL = userConfig.disableSsl || false
         this.hints = userConfig.hints || {}
+        this.reconnectTime = userConfig.reconnectTime ?? 1000
+        this.maxReconnectTime = userConfig.maxReconnectTime ?? 10000
 
         if (typeof onReady === 'function') {
             this.onReady = onReady
@@ -109,7 +113,14 @@ export default class ADAC {
     private setupWebsocketsAPI () {
         if (this.closed) return
 
-        this.api = new WebsocketsAPI(this.customerApiKey, this.apiHost, this.debug, this.disableSSL)
+        this.api = new WebsocketsAPI({
+            apiKey: this.customerApiKey,
+            host: this.apiHost,
+            debug: this.debug,
+            sslDisabled: this.disableSSL,
+            reconnectTime: this.reconnectTime,
+            maxReconnectTime: this.maxReconnectTime,
+        })
         this.api.fetchCategories()
         this.api.onConnectionError = this.onConnectionError.bind(this)
         this.initializeActionListeners()

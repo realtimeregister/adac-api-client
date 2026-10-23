@@ -14,6 +14,19 @@ export interface AdacUserConfig {
     disableSsl?: boolean;
     apiHost?: string;
     hints?: Hints,
+    /** First reconnect delay in ms; doubles on each failed attempt. Defaults to 1000. */
+    reconnectTime?: number;
+    /** Maximum reconnect delay in ms. Defaults to 10000. */
+    maxReconnectTime?: number;
+}
+
+export interface WebsocketApiConfig {
+  apiKey: string;
+  reconnectTime: number;
+  maxReconnectTime: number;
+  host: string;
+  debug: boolean;
+  sslDisabled: boolean;
 }
 
 export const DomainStatuses = {

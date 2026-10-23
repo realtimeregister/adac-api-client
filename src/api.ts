@@ -1,11 +1,11 @@
 import { ensureSessionID } from '@/utils.ts'
-import type { Command, Hints } from '@/resources/types.ts'
+import type { Command, Hints, WebsocketApiConfig } from '@/resources/types.ts'
 
 
 export default class WebsocketsAPI {
     /** First reconnect delay; doubles on each failed attempt, up to maxReconnectTime. */
-    reconnectTime = 1000
-    maxReconnectTime = 10000
+    reconnectTime: number
+    maxReconnectTime: number
     /** How long a connection must stay open before the reconnect delay is reset. */
     stableTime = 5000
     apiKey: string
@@ -19,20 +19,19 @@ export default class WebsocketsAPI {
     private stableTimer?: ReturnType<typeof setTimeout>
 
     /**
-     * @param ApiKey - customer api key
-     * @param host - api host
-     * @param debug - use debug mode
-     * @param sslDisabled - disable/enable ssl
+     * @param {WebsocketApiConfig} config - api key, host, debug/ssl flags and reconnect timings
      */
-    constructor(ApiKey: string, host: string, debug = false, sslDisabled = false) {
+    constructor(config: WebsocketApiConfig) {
         ensureSessionID()
-        this.apiKey = ApiKey
-        this.host = host
-        this.debug = debug
-        this.sslDisabled = sslDisabled
+        this.apiKey = config.apiKey
+        this.host = config.host
+        this.debug = config.debug
+        this.sslDisabled = config.sslDisabled
+        this.reconnectTime = config.reconnectTime
+        this.maxReconnectTime = config.maxReconnectTime
         this.connection = this.setupConnection()
 
-        if (debug && this.connection) {
+        if (this.debug && this.connection) {
             console.log('ADAC: Connection successful')
         }
 
