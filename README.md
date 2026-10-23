@@ -12,7 +12,7 @@ TypeScript API client for our Advanced Domain Availability Checker (ADAC).
 
 ### Installation
 ```bash
-yarn add @realtimeregister/adac-api-client
+bun add @realtimeregister/adac-api-client
 ```
 OR
 ```bash
@@ -26,8 +26,8 @@ Examples can be found on [the Wiki of this GitHub repository](https://github.com
 
 ### Building
 ```bash
-yarn build # build for production
-yarn dev # build for dev, with watch mode enabled
+bun run build # build for production
+bun run dev # build for dev, with watch mode enabled
 ```
 
 ## License
