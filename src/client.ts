@@ -21,6 +21,7 @@ export default class ADAC {
     api?: WebsocketsAPI
     hints: Hints
     onReady: () => void
+    private closed = false
 
     private constructor(apiKey: string, userConfig: AdacUserConfig = {} as AdacUserConfig, onReady?: () => void) {
         if (!apiKey) throw new Error('Please provide an API key')
@@ -106,6 +107,8 @@ export default class ADAC {
      * @private
      */
     private setupWebsocketsAPI () {
+        if (this.closed) return
+
         this.api = new WebsocketsAPI(this.customerApiKey, this.apiHost, this.debug, this.disableSSL)
         this.api.fetchCategories()
         this.api.onConnectionError = this.onConnectionError.bind(this)
@@ -189,6 +192,14 @@ export default class ADAC {
 
         this.api?.getSuggestions(value, { ...this.hints, ...hints })
       }
+    }
+
+    /**
+     * Stop the client: close the connection and stop reconnecting.
+     */
+    close (): void {
+        this.closed = true
+        this.api?.close()
     }
 
     /**

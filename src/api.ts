@@ -14,6 +14,8 @@ export default class WebsocketsAPI {
     debug: boolean
     sslDisabled: boolean
     private retries = 0
+    private closed = false
+    private reconnectTimer?: ReturnType<typeof setTimeout>
     private stableTimer?: ReturnType<typeof setTimeout>
 
     /**
@@ -57,6 +59,8 @@ export default class WebsocketsAPI {
      * @private
      */
     private sendCommand (command: Command) {
+        if (this.closed) return
+
         if (this.connection.readyState !== 1) {
             setTimeout(() => {
                 this.sendCommand(command)
@@ -98,17 +102,28 @@ export default class WebsocketsAPI {
         connection.onclose = (event) => {
             clearTimeout(this.stableTimer)
             if (this.debug) console.log('ADAC: Websocket connection closed')
+            if (this.closed) return
             if (event.code === 1006 && !event.wasClean) this.onConnectionError()
 
             const delay = Math.min(this.reconnectTime * 2 ** this.retries, this.maxReconnectTime)
             this.retries++
-            setTimeout(() => {
+            this.reconnectTimer = setTimeout(() => {
                 if (this.debug) console.log('ADAC: Retry connecting to Websocket')
                 this.connection = this.setupConnection()
             }, delay)
         }
 
         return connection
+    }
+
+    /**
+     * Close the connection for good: no reconnect, and pending commands are dropped.
+     */
+    close () {
+        this.closed = true
+        clearTimeout(this.reconnectTimer)
+        clearTimeout(this.stableTimer)
+        this.connection.close()
     }
 
     /**
