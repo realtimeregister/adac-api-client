@@ -3,12 +3,18 @@ import type { Command, Hints } from '@/resources/types.ts'
 
 
 export default class WebsocketsAPI {
-    reconnectTime = 3000
+    /** First reconnect delay; doubles on each failed attempt, up to maxReconnectTime. */
+    reconnectTime = 1000
+    maxReconnectTime = 10000
+    /** How long a connection must stay open before the reconnect delay is reset. */
+    stableTime = 5000
     apiKey: string
-    readonly connection: WebSocket
+    connection: WebSocket
     host: string
     debug: boolean
     sslDisabled: boolean
+    private retries = 0
+    private stableTimer?: ReturnType<typeof setTimeout>
 
     /**
      * @param ApiKey - customer api key
@@ -31,6 +37,19 @@ export default class WebsocketsAPI {
     }
 
     onConnectionError (): void {}
+
+    /**
+     * Hook, called each time a connection opens, including after a reconnect.
+     */
+    onOpen (): void {}
+
+    /**
+     * Hook, called when a message comes in on the current connection.
+     * @param {MessageEvent} message
+     */
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onMessage (message: MessageEvent): void {}
 
     /**
      * Send a command to the current connection.
@@ -63,24 +82,37 @@ export default class WebsocketsAPI {
     private setupWebsocketConnection () {
         const connection = new WebSocket(this.getWebsocketUrl() + '?session_id=' + sessionStorage.getItem('sessionId'))
 
+        connection.onopen = () => {
+            // Only reset the backoff once the connection has stayed up for a while, so a
+            // server that accepts and then closes straight away isn't retried every second.
+            this.stableTimer = setTimeout(() => {
+                this.retries = 0
+            }, this.stableTime)
+            this.onOpen()
+        }
+
+        connection.onmessage = (message) => this.onMessage(message)
+
+        // Whatever the close code, reconnect with backoff and make the new socket the
+        // current one. Commands still waiting in sendCommand then go out on it.
         connection.onclose = (event) => {
+            clearTimeout(this.stableTimer)
             if (this.debug) console.log('ADAC: Websocket connection closed')
-            if (event.code === 1006 && !event.wasClean) {
-                if (this.debug) console.log('ADAC: Websocket failed, using fallback')
-                this.onConnectionError()
-            } else {
-                setTimeout(() => {
-                    if (this.debug) console.log('ADAC: Retry connecting to Websocket')
-                    this.setupConnection()
-                }, this.reconnectTime)
-            }
+            if (event.code === 1006 && !event.wasClean) this.onConnectionError()
+
+            const delay = Math.min(this.reconnectTime * 2 ** this.retries, this.maxReconnectTime)
+            this.retries++
+            setTimeout(() => {
+                if (this.debug) console.log('ADAC: Retry connecting to Websocket')
+                this.connection = this.setupConnection()
+            }, delay)
         }
 
         return connection
     }
 
     /**
-     * Retrieve the websocket connection
+     * Retrieve the current websocket connection. It is replaced on reconnect.
      */
     getConnection () {
         return this.connection

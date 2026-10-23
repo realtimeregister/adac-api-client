@@ -95,6 +95,11 @@ export default class ADAC {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onClientError (error: AdacErrorResponse) {}
 
+    /**
+     * Hook, called when the connection failed. The API reconnects by itself.
+     */
+    onConnectionError () {}
+
 
     /**
      * Set up the API that works via websockets.
@@ -105,16 +110,6 @@ export default class ADAC {
         this.api.fetchCategories()
         this.api.onConnectionError = this.onConnectionError.bind(this)
         this.initializeActionListeners()
-    }
-
-    /**
-     * Handler for when the API couldn't connect
-     */
-    onConnectionError () {
-        // Retry connection after 1 second
-        setTimeout(() => {
-          this.setupWebsocketsAPI()
-        }, 1000)
     }
 
     /**
@@ -200,17 +195,15 @@ export default class ADAC {
      * Initialize the websocket listeners.
      * @private
      */
-    private initializeActionListeners () {
-      const connection = this.api!.getConnection()
+    private initializeActionListeners (): void {
+      const api = this.api!
 
-      if (connection) {
-          connection.onopen = () => this.onReady()
+      api.onOpen = () => this.onReady()
 
-          connection.onmessage = (message) => {
-              const data = JSON.parse(message.data)
-              // @ts-expect-error Can be ignored, the action is called dynamically
-              this['action_' + data.action](data.data)
-          }
+      api.onMessage = (message) => {
+          const data = JSON.parse(message.data)
+          // @ts-expect-error Can be ignored, the action is called dynamically
+          this['action_' + data.action](data.data)
       }
     }
 
