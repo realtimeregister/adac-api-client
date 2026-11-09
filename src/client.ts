@@ -122,7 +122,7 @@ export default class ADAC {
             maxReconnectTime: this.maxReconnectTime,
         })
         this.api.fetchCategories()
-        this.api.onConnectionError = this.onConnectionError.bind(this)
+        this.api.onConnectionError = () => this.onConnectionError()
         this.initializeActionListeners()
     }
 
