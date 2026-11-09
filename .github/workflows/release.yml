@@ -27,7 +27,7 @@ jobs:
       - name: Building
         run: bun run build
       - name: Running audit
-        run: bun audit
+        run: bun audit --prod
       - name: Semantic release
         run: bunx semantic-release
         env:
